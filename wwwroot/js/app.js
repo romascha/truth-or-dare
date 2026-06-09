@@ -87,6 +87,7 @@ $('resetBtn').onclick = () => {
   state.user = null;
   connection = null;
   $('gameCard').classList.add('hidden');
+  $('chatArea').innerHTML = '';
   $('lobbyCard').style.display = 'none';
   $('loginCard').style.display = '';
   $('userInfo').textContent = '';
