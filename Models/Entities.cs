@@ -56,4 +56,4 @@ public sealed class Turn
     public Game? Game { get; set; }
 }
 
-public sealed record PromptItem(string Type, string Category, string Text);
+public sealed record PromptItem(string Type, string Category, string Text, string? Gender);

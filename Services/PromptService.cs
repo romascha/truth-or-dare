@@ -15,48 +15,51 @@ public sealed class PromptService(IWebHostEnvironment env)
         }) ?? [];
     });
 
-    public PromptItem GetRandom(PromptType type, string? category)
+    public PromptItem? GetRandomExcluding(PromptType type, string? category, string? playerGender, HashSet<string> usedTexts)
     {
-        var list = GetFiltered(type, category);
-        if (list.Count == 0) throw new InvalidOperationException("No prompts configured.");
-        return list[Random.Shared.Next(list.Count)];
-    }
-
-    public PromptItem? GetRandomExcluding(PromptType type, string? category, HashSet<string> usedTexts)
-    {
-        var list = GetFiltered(type, category)
+        var list = GetFiltered(type, category, playerGender)
             .Where(x => !usedTexts.Contains(x.Text))
             .ToList();
         if (list.Count == 0) return null;
         return list[Random.Shared.Next(list.Count)];
     }
 
-    public int CountAvailable(string? category, HashSet<string> usedTexts)
+    public int CountAvailable(string? category, string? playerGender, HashSet<string> usedTexts)
     {
-        var all = GetFilteredByCategory(category);
+        var all = GetFilteredByCategory(category, playerGender);
         return all.Count(x => !usedTexts.Contains(x.Text));
     }
 
-    private List<PromptItem> GetFiltered(PromptType type, string? category)
+    private List<PromptItem> GetFiltered(PromptType type, string? category, string? playerGender)
     {
         var typeText = type.ToString();
-        var query = _prompts.Value.Where(x => x.Type.Equals(typeText, StringComparison.OrdinalIgnoreCase));
+        var query = _prompts.Value
+            .Where(x => x.Type.Equals(typeText, StringComparison.OrdinalIgnoreCase))
+            .Where(x => GenderMatches(x.Gender, playerGender));
 
         if (!string.IsNullOrWhiteSpace(category) && !category.Equals("Any", StringComparison.OrdinalIgnoreCase))
             query = query.Where(x => x.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
 
-        var list = query.ToList();
-        if (list.Count == 0)
-            list = _prompts.Value.Where(x => x.Type.Equals(typeText, StringComparison.OrdinalIgnoreCase)).ToList();
-
-        return list;
+        return query.ToList();
     }
 
-    private List<PromptItem> GetFilteredByCategory(string? category)
+    private List<PromptItem> GetFilteredByCategory(string? category, string? playerGender)
     {
-        if (string.IsNullOrWhiteSpace(category) || category.Equals("Any", StringComparison.OrdinalIgnoreCase))
-            return _prompts.Value;
+        var query = _prompts.Value.Where(x => GenderMatches(x.Gender, playerGender));
 
-        return _prompts.Value.Where(x => x.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (!string.IsNullOrWhiteSpace(category) && !category.Equals("Any", StringComparison.OrdinalIgnoreCase))
+            query = query.Where(x => x.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
+
+        return query.ToList();
+    }
+
+    private static bool GenderMatches(string? promptGender, string? playerGender)
+    {
+        // null or empty or "Any" means the prompt is for everyone
+        if (string.IsNullOrWhiteSpace(promptGender) || promptGender.Equals("Any", StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (string.IsNullOrWhiteSpace(playerGender))
+            return true;
+        return promptGender.Equals(playerGender, StringComparison.OrdinalIgnoreCase);
     }
 }

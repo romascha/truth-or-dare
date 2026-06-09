@@ -11,7 +11,8 @@ const categoryNames = {
   Light: 'Лайт 😊',
   Romantic: 'Романтика 💗',
   Deep: 'Глубоко 🌊',
-  Flirty: 'Флирт 🔥'
+  Flirty: 'Флирт 🔥',
+  Dirty: 'Разврат 🍑'
 };
 
 function authHeaders() {
@@ -70,13 +71,25 @@ $('inviteLink').onclick = async () => {
 // --- Новая игра ---
 $('newGameBtn').onclick = async () => {
   if (!confirm('Создать новую игру?')) return;
-  localStorage.removeItem('tod_game_id');
-  localStorage.removeItem('tod_invite_url');
-  state.gameId = '';
-  state.inviteUrl = '';
   connection = null;
   $('gameCard').classList.add('hidden');
   $('lobbyCard').style.display = '';
+};
+
+// --- Сбросить всё ---
+$('resetBtn').onclick = () => {
+  if (!confirm('Сбросить все данные игры? (выход из текущей сессии)')) return;
+  localStorage.removeItem('tod_game_id');
+  localStorage.removeItem('tod_invite_url');
+  localStorage.removeItem('tod_user');
+  state.gameId = '';
+  state.inviteUrl = '';
+  state.user = null;
+  connection = null;
+  $('gameCard').classList.add('hidden');
+  $('lobbyCard').style.display = 'none';
+  $('loginCard').style.display = '';
+  $('userInfo').textContent = '';
 };
 
 // --- Завершить игру ---

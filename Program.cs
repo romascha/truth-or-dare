@@ -206,7 +206,10 @@ app.MapGet("/api/games/{gameId:guid}", async (Guid gameId, AppDbContext db, Http
     }).ToList();
 
     var usedTexts = game.Turns.Select(x => x.PromptText).ToHashSet();
-    var promptsExhausted = prompts.CountAvailable(game.Category, usedTexts) == 0;
+    var currentPlayerGender = currentPlayerId.HasValue
+        ? players.FirstOrDefault(p => p.UserId == currentPlayerId.Value)?.User?.Gender.ToString()
+        : null;
+    var promptsExhausted = prompts.CountAvailable(game.Category, currentPlayerGender, usedTexts) == 0;
 
     return Results.Ok(new
     {
@@ -264,7 +267,8 @@ app.MapPost("/api/games/{gameId:guid}/choose", async (Guid gameId, ChooseRequest
         type = PromptType.Truth;
 
     var usedTexts = game.Turns.Select(x => x.PromptText).ToHashSet();
-    var prompt = prompts.GetRandomExcluding(type, game.Category, usedTexts);
+    var playerGender = user.Gender.ToString();
+    var prompt = prompts.GetRandomExcluding(type, game.Category, playerGender, usedTexts);
     if (prompt is null)
         return Results.Ok(new { PromptsExhausted = true });
 
