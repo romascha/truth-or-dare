@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Правда или Действие</title>
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <main class="shell">
+    <h1>Правда или Действие</h1>
+
+    <section class="card" id="loginCard">
+      <h2>Вход</h2>
+      <input id="displayName" placeholder="Твоё имя" maxlength="30" />
+      <select id="gender">
+        <option value="Other">Выбери пол</option>
+        <option value="Male">Мужской</option>
+        <option value="Female">Женский</option>
+        <option value="Other">Другое</option>
+      </select>
+      <button id="loginBtn">Войти</button>
+      <p id="userInfo" class="muted"></p>
+    </section>
+
+    <section class="card" id="lobbyCard" style="display:none">
+      <h2>Создать игру</h2>
+      <select id="categorySelect">
+        <option value="Light">Лайт 😊</option>
+        <option value="Romantic">Романтика 💗</option>
+        <option value="Deep">Глубоко 🌊</option>
+        <option value="Flirty">Флирт 🔥</option>
+      </select>
+      <button id="createGameBtn">Новая игра</button>
+      <div id="createdGame" class="result"></div>
+    </section>
+
+    <section class="card hidden" id="gameCard">
+      <div class="game-header">
+        <h2>Игра <span id="categoryLabel" class="neon-label"></span></h2>
+        <div class="game-header-buttons">
+          <button id="inviteLink" class="btn-invite">Пригласить</button>
+          <button id="newGameBtn">Новая игра</button>
+          <button id="endGameBtn" class="danger">Завершить игру</button>
+        </div>
+      </div>
+      <div id="gameStatus"></div>
+      <div id="players"></div>
+      <div id="whoseTurn" class="whose-turn"></div>
+      <hr />
+
+      <div id="choicePanel" class="choice-panel" style="display:none">
+        <p><b>Твой ход! Выбирай:</b></p>
+        <div class="choice-buttons">
+          <button onclick="choose('Truth')" class="btn-truth">Правда</button>
+          <button onclick="choose('Dare')" class="btn-dare">Действие</button>
+          <button onclick="choose('Random')" class="btn-random">Случайно</button>
+        </div>
+      </div>
+
+      <div id="chatArea" class="chat-area"></div>
+    </section>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

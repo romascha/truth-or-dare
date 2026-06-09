@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Присоединиться к игре</title>
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <main class="shell">
+    <h1>Присоединиться к игре</h1>
+    <section class="card">
+      <input id="displayName" placeholder="Твоё имя" maxlength="30" />
+      <select id="gender">
+        <option value="Other">Выбери пол</option>
+        <option value="Male">Мужской</option>
+        <option value="Female">Женский</option>
+        <option value="Other">Другое</option>
+      </select>
+      <button id="joinBtn">Войти и присоединиться</button>
+      <div id="result" class="result"></div>
+    </section>
+  </main>
+  <script src="/js/join.js"></script>
+</body>
+</html>
