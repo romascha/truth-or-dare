@@ -72,6 +72,7 @@ $('inviteLink').onclick = async () => {
 $('newGameBtn').onclick = async () => {
   if (!confirm('Создать новую игру?')) return;
   connection = null;
+  document.body.className = '';
   $('gameCard').classList.add('hidden');
   $('lobbyCard').style.display = '';
 };
@@ -79,18 +80,22 @@ $('newGameBtn').onclick = async () => {
 // --- Сбросить всё ---
 $('resetBtn').onclick = () => {
   if (!confirm('Сбросить все данные игры? (выход из текущей сессии)')) return;
-  localStorage.removeItem('tod_game_id');
-  localStorage.removeItem('tod_invite_url');
-  localStorage.removeItem('tod_user');
+  localStorage.clear();
   state.gameId = '';
   state.inviteUrl = '';
   state.user = null;
   connection = null;
-  $('gameCard').classList.add('hidden');
+  document.body.className = '';
   $('chatArea').innerHTML = '';
+  $('gameStatus').innerHTML = '';
+  $('players').innerHTML = '';
+  $('whoseTurn').style.display = 'none';
+  $('choicePanel').style.display = 'none';
+  $('gameCard').classList.add('hidden');
   $('lobbyCard').style.display = 'none';
   $('loginCard').style.display = '';
   $('userInfo').textContent = '';
+  $('createdGame').innerHTML = '';
 };
 
 // --- Завершить игру ---
@@ -160,6 +165,11 @@ async function loadGame() {
 
   // Неоновая надпись категории
   $('categoryLabel').textContent = categoryNames[game.category] || game.category;
+
+  // Фон по категории
+  document.body.className = '';
+  const bgMap = { Light: 'bg-light', Romantic: 'bg-romantic', Deep: 'bg-deep', Flirty: 'bg-flirty', Dirty: 'bg-dirty' };
+  if (bgMap[game.category]) document.body.classList.add(bgMap[game.category]);
 
   // Ссылка-приглашение
   if (state.inviteUrl) {
